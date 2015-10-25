@@ -1,0 +1,21 @@
+﻿@model IEnumerable<StreamQ.Models.Question>
+
+@{
+    ViewBag.Title = "Ed's Page";
+}
+
+<h1 class="page-title">Ed's Page</h1>
+
+@foreach (var q in Model)
+{
+    <div class="well well-sm">
+        <div class="row sq-question">
+            <div class="col-sm-2 col-md-1"><span class="label label-primary">@(q.UpVotes - q.DownVotes) @( (q.UpVotes - q.DownVotes) == 1 ? "vote" : "votes")</span></div>
+            <div class="col-sm-7 col-md-8">@q.Text </div>
+            <div class="col-sm-3 text-right">
+                <a href="/ed/answer/@q.Id" class="btn btn-success">Answered</a>
+                <a href="/ed/reject/@q.Id" class="btn btn-warning">Rejected</a>
+            </div>
+        </div>
+    </div>
+}
