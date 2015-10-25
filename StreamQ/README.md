@@ -4,10 +4,6 @@ A simple MVC 5 app to handle questions for very busy live streams where the volu
 
 Questions can be asked and voted up or down.
 
-## Demo
-
-http://streamq.azurewebsites.net/
-
 ## To do
 
 Add manager page where top questions can be viewed and marked as answered.

@@ -11,7 +11,8 @@ namespace StreamQ.Models
         public string Text { get; set; }
         public int UpVotes { get; set; }
         public int DownVotes { get; set; }
-        public bool Archived { get; set; }
+        public bool Rejected { get; set; }
+        public bool Answered { get; set; }
         public string OwnerId { get; set; }
 
     }
