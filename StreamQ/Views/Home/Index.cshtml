@@ -35,6 +35,7 @@
 
         @if (User.Identity.IsAuthenticated)
         {
+            <p>Ask a question below. Please keep question to the topic of the current stream. You have a limited number of question and votes to use, use them wisley.</p>
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <form method="post">
                 <div class="form-group form-group-lg">
