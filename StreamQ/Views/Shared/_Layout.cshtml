@@ -20,7 +20,7 @@
                 </button>
                 @Html.ActionLink("StreamQ (Very Alpha)", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
-            <div class="navbar-collapse collapse">              
+            <div class="navbar-collapse collapse">
                 @Html.Partial("_LoginPartial")
             </div>
         </div>
@@ -29,7 +29,15 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - Iain M Norman</p>
+
+            <div class="text-right">
+                <p>
+                    Made with <i class="fa fa-heart"></i> by <a href="http://cv.iainmnorman.com/">Iain M Norman</a>
+                </p>
+                <p>
+                    <a href="http://github/iainmnorman/streamq" class="btn btn-default"><i class="fa fa-code-fork"></i> Fork Us</a>
+                </p>
+            </div>
         </footer>
     </div>
 
