@@ -23,7 +23,7 @@ namespace StreamQ.Controllers
                 model.VoteQuota = user.VoteQuota;
                 model.QuestionQuota = user.QuestionQuota;
             }
-            model.Questions = db.Questions.OrderByDescending(o => o.TotalVotes);
+            model.Questions = db.Questions.OrderByDescending(o => o.UpVotes - o.DownVotes);
             model.QuestionText = null;
             return View(model);
         }
@@ -32,7 +32,7 @@ namespace StreamQ.Controllers
         [Authorize]
         public ActionResult Index(QuestionsVM model)
         {
-            model.Questions = db.Questions.OrderByDescending(o => o.TotalVotes);
+            model.Questions = db.Questions.OrderByDescending(o => o.UpVotes - o.DownVotes);
 
             if (ModelState.IsValid)
             {
