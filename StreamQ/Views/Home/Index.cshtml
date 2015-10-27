@@ -69,8 +69,8 @@
                             <a href="/home/votedown/@q.Id" class="btn btn-warning" title="Vote Down"><i class="fa fa-thumbs-down"></i></a>
                         }
                         else
-                        {
-                            if (q.OwnerId == User.Identity.GetUserId())
+                        {                           
+                            if (User.Identity.IsAuthenticated && q.OwnerId == User.Identity.GetUserId())
                             {
                                 <small>Your question</small>
                             }
