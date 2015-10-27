@@ -24,7 +24,9 @@ namespace StreamQ.Controllers
                 model.VoteQuota = user.VoteQuota;
                 model.QuestionQuota = user.QuestionQuota;
             }
-            model.Questions = db.Questions.OrderByDescending(o => o.UpVotes - o.DownVotes);
+            model.Questions = db.Questions
+                .OrderBy(o => o.Answered)
+                .ThenByDescending(o => o.UpVotes - o.DownVotes);
             model.QuestionText = null;
             return View(model);
         }
