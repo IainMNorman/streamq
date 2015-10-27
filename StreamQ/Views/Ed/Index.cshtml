@@ -12,7 +12,7 @@
         <div class="row sq-question">
             <div class="col-sm-2 col-md-1"><span class="label label-primary">@(q.TotalVotes) @( (q.TotalVotes) == 1 ? "vote" : "votes")</span></div>
             <div class="col-sm-6 col-md-8">@q.Text </div>
-            <div class="col-sm-4 text-right">
+            <div class="col-sm-4 col-md-3 text-right">
                 <a href="/ed/answer/@q.Id" class="btn btn-success">Answered</a>
                 <a href="/ed/reject/@q.Id" class="btn btn-warning">Rejected</a>
             </div>
