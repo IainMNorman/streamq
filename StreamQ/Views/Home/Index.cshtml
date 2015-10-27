@@ -17,7 +17,6 @@
 }
 <div class="row">
     <div class="col-sm-12">
-
         <h1 class="page-header">
             Questions for Ed
             @if (User.Identity.IsAuthenticated)
@@ -32,7 +31,6 @@
             }
         </h1>
 
-
         @if (User.Identity.IsAuthenticated)
         {
             <p>Ask a question below. Please keep question to the topic of the current stream. You have a limited number of question and votes to use, use them wisley.</p>
@@ -46,7 +44,6 @@
                             <input type="submit" class="btn btn-primary btn-lg" value="Ask Question" />
                         </span>
                     </div>
-
                 </div>
             </form>
 
@@ -59,16 +56,14 @@
             <p>Please <a href="/account/login/">login</a> to ask a question or vote.</p>
         }
 
-
         @foreach (var q in Model.Questions)
         {
             <div class="well well-sm">
                 <div class="row sq-question">
-
                     <div class="col-sm-2 col-md-1"><span class="label label-primary">@(q.TotalVotes) @( (q.TotalVotes) == 1 ? "vote" : "votes")</span></div>
                     <div class="col-sm-8 col-md-9">@q.Text </div>
                     <div class="col-sm-2 text-right">
-                        @if (Model.VoteQuota > 0 && q.OwnerId != User.Identity.GetUserId())
+                        @if (Model.VoteQuota > 0 && q.OwnerId != User.Identity.GetUserId() & q.Answered == false)
                         {
                             <a href="/home/voteup/@q.Id" class="btn btn-success" title="Vote Up"><i class="fa fa-thumbs-up"></i></a>
                             <a href="/home/votedown/@q.Id" class="btn btn-warning" title="Vote Down"><i class="fa fa-thumbs-down"></i></a>
@@ -79,6 +74,10 @@
                             {
                                 <small>Your question</small>
                             }
+                            else
+                            {
+                                <small>Answered</small>
+                            }
                         }
                     </div>
                 </div>
@@ -86,9 +85,6 @@
         }
     </div>
 </div>
-
-
-
 
 
 

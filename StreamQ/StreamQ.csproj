@@ -231,10 +231,6 @@
     <Compile Include="ViewModels\QuestionsVM.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\aspnet-StreamQ-20151023085342.mdf" />
-    <Content Include="App_Data\aspnet-StreamQ-20151023085342_log.ldf">
-      <DependentUpon>aspnet-StreamQ-20151023085342.mdf</DependentUpon>
-    </Content>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -332,6 +328,9 @@
     <EmbeddedResource Include="Migrations\201510252001500_QuestionBools.resx">
       <DependentUpon>201510252001500_QuestionBools.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
