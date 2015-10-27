@@ -14,6 +14,7 @@ namespace StreamQ.Controllers
 
         ApplicationDbContext db = new ApplicationDbContext();
 
+
         public ActionResult Index()
         {
             var model = new QuestionsVM();
