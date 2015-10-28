@@ -26,7 +26,7 @@ namespace StreamQ.Controllers
             }
             model.Questions = db.Questions
                 .OrderBy(o => o.Answered)
-                .ThenByDescending(o => o.UpVotes - o.DownVotes);
+                .ThenByDescending(o => o.Votes.Sum(v => v.VoteValue));
             model.QuestionText = null;
             return View(model);
         }
@@ -35,7 +35,7 @@ namespace StreamQ.Controllers
         [Authorize]
         public ActionResult Index(QuestionsVM model)
         {
-            model.Questions = db.Questions.OrderByDescending(o => o.UpVotes - o.DownVotes);
+            model.Questions = db.Questions.OrderByDescending(o => o.Votes.Sum(v => v.VoteValue));
 
             if (ModelState.IsValid)
             {
@@ -46,7 +46,11 @@ namespace StreamQ.Controllers
                 if (user.QuestionQuota > 0)
                 {
                     user.QuestionQuota--;
-                    db.Questions.Add(new Question() { Text = model.QuestionText, UpVotes = 1, OwnerId = user.Id });
+                    db.Questions.Add(new Question() {
+                        Text = model.QuestionText,
+                        Questioner = user,
+                        TimeStamp = DateTime.UtcNow                        
+                    });
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
@@ -80,17 +84,21 @@ namespace StreamQ.Controllers
             var user = db.Users.Find(User.Identity.GetUserId());
             var question = db.Questions.Find(id);
 
-            if (user.VoteQuota > 0 && user.Id != question.OwnerId)
+            if (user.VoteQuota > 0 && user.Id != question.Questioner.Id)
             {
-
+                var vote = new Vote(){
+                    Voter = user,
+                    TimeStamp = DateTime.UtcNow
+                };
+                
                 user.VoteQuota--;
                 if (up)
                 {
-                    question.UpVotes++;
+                    vote.VoteValue = 1;
                 }
                 else
                 {
-                    question.DownVotes++;
+                    vote.VoteValue = -1;
                 }
                 db.SaveChanges();
             }

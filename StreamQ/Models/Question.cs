@@ -10,20 +10,24 @@ namespace StreamQ.Models
     {
         public int Id { get; set; }
         public string Text { get; set; }
-        public int UpVotes { get; set; }
-        public int DownVotes { get; set; }
         public bool Rejected { get; set; }
         public bool Answered { get; set; }
-        public string OwnerId { get; set; }
+        public bool Deleted { get; set; }
+        public string Answer { get; set; }
+        public DateTime TimeStamp { get; set; }
+
+        public virtual ApplicationUser Questioner { get; set; }
+        public virtual ICollection<Vote> Votes { get; set; }
 
         [NotMapped]
         public int TotalVotes
         {
             get
             {
-                return UpVotes - DownVotes;
+                return this.Votes.Sum(v => v.VoteValue);
             }
         }
 
     }
+
 }

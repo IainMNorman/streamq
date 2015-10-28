@@ -16,7 +16,7 @@ namespace StreamQ.Controllers
         public ActionResult Index()
         {
             var qs = db.Questions.Where(q => q.Rejected != true && q.Answered != true)
-                .OrderByDescending(o => o.UpVotes - o.DownVotes);
+                .OrderByDescending(o => o.Votes.Sum(v => v.VoteValue));
             return View(qs);
         }
 
