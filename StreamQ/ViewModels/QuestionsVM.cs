@@ -12,6 +12,7 @@ namespace StreamQ.ViewModels
         public IEnumerable<Question> Questions { get; set; }
         [Required(ErrorMessage = "You must provide a question.")]
         [MinLength(10, ErrorMessage = "Question is too short.")]
+        [MaxLength(140, ErrorMessage = "Question is too long. 140 characters maximum.")]
         public string QuestionText { get; set; }
         public int VoteQuota { get; set; }
         public int QuestionQuota { get; set; }
