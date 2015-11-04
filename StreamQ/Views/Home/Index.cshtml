@@ -63,20 +63,23 @@
                     <div class="col-sm-2 col-md-1"><span class="label label-primary">@(q.TotalVotes) @( (q.TotalVotes) == 1 ? "vote" : "votes")</span></div>
                     <div class="col-sm-8 col-md-9">@q.Text </div>
                     <div class="col-sm-2 text-right">
-                        @if (Model.VoteQuota > 0 && q.OwnerId != User.Identity.GetUserId() & q.Answered == false)
+                        @if (q.Answered)
                         {
-                            <a href="/home/voteup/@q.Id" class="btn btn-success" title="Vote Up"><i class="fa fa-thumbs-up"></i></a>
-                            <a href="/home/votedown/@q.Id" class="btn btn-warning" title="Vote Down"><i class="fa fa-thumbs-down"></i></a>
+                            <small>Answered</small>
                         }
                         else
-                        {                           
-                            if (User.Identity.IsAuthenticated && q.OwnerId == User.Identity.GetUserId())
+                        {
+                            if (Model.VoteQuota > 0 && q.Questioner.Id != User.Identity.GetUserId())
                             {
-                                <small>Your question</small>
+                                <a href="/home/voteup/@q.Id" class="btn btn-success" title="Vote Up"><i class="fa fa-thumbs-up"></i></a>
+                                <a href="/home/votedown/@q.Id" class="btn btn-warning" title="Vote Down"><i class="fa fa-thumbs-down"></i></a>
                             }
                             else
                             {
-                                <small>Answered</small>
+                                if (q.Questioner.Id == User.Identity.GetUserId())
+                                {
+                                    <small>Your question</small>
+                                }
                             }
                         }
                     </div>

@@ -1,5 +1,6 @@
 namespace StreamQ.Migrations
 {
+    using Models;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
@@ -26,6 +27,9 @@ namespace StreamQ.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
+
+            context.Users.AddOrUpdate(u => u.UserName,
+                new ApplicationUser { UserName = "iain@norman.org" });
         }
     }
 }
