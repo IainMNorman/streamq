@@ -16,10 +16,6 @@ namespace StreamQ.Models
             // Add custom user claims here
             return userIdentity;
         }
-
-
-        public int VoteQuota { get; set; }
-        public int QuestionQuota { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>

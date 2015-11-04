@@ -21,8 +21,6 @@ namespace StreamQ.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var user = db.Users.Find(User.Identity.GetUserId());
-                model.VoteQuota = user.VoteQuota;
-                model.QuestionQuota = user.QuestionQuota;
             }
             model.Questions = db.Questions
                 .OrderBy(o => o.Answered)
@@ -33,7 +31,7 @@ namespace StreamQ.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult Index(QuestionsVM model)
+        public ActionResult AskQuestion(QuestionsVM model)
         {
             model.Questions = db.Questions.OrderByDescending(o => o.Votes.Sum(v => v.VoteValue));
 
@@ -41,67 +39,18 @@ namespace StreamQ.Controllers
             {
 
                 var user = db.Users.Find(User.Identity.GetUserId());
-                model.VoteQuota = user.VoteQuota;
-                model.QuestionQuota = user.QuestionQuota;
-                if (user.QuestionQuota > 0)
+
+                db.Questions.Add(new Question()
                 {
-                    user.QuestionQuota--;
-                    db.Questions.Add(new Question() {
-                        Text = model.QuestionText,
-                        Questioner = user,
-                        TimeStamp = DateTime.UtcNow                        
-                    });
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    ModelState.AddModelError("QuestionText", "Out of questions!");
-                    return View("Index", model);
-                }
+                    Text = model.QuestionText,
+                    Questioner = user,
+                    TimeStamp = DateTime.UtcNow
+                });
+                db.SaveChanges();
+                return RedirectToAction("Index");
+
             }
             return View("Index", model);
-        }
-
-        [HttpGet]
-        [Authorize]
-        public ActionResult VoteUp(int id)
-        {
-            Vote(id, true);
-            return RedirectToAction("Index");
-        }
-
-        [HttpGet]
-        [Authorize]
-        public ActionResult VoteDown(int id)
-        {
-            Vote(id, false);
-            return RedirectToAction("Index");
-        }
-
-        private void Vote(int id, bool up)
-        {
-            var user = db.Users.Find(User.Identity.GetUserId());
-            var question = db.Questions.Find(id);
-
-            if (user.VoteQuota > 0 && user.Id != question.Questioner.Id)
-            {
-                var vote = new Vote(){
-                    Voter = user,
-                    TimeStamp = DateTime.UtcNow
-                };
-                
-                user.VoteQuota--;
-                if (up)
-                {
-                    vote.VoteValue = 1;
-                }
-                else
-                {
-                    vote.VoteValue = -1;
-                }
-                db.SaveChanges();
-            }
         }
 
     }
