@@ -31,5 +31,6 @@ namespace StreamQ.Models
         }
 
         public DbSet<Question> Questions { get; set; }
+        
     }
 }

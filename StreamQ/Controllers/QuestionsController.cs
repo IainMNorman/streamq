@@ -35,8 +35,48 @@ namespace StreamQ.Controllers
                 return new HttpResponseMessage(HttpStatusCode.NotFound);
             }
 
-            var existingVote = db.Votes
+            q.Votes.Where(v => v.Voter == user && v.Active == true).ToList().ForEach(v =>
+            {
+                v.Active = false;
+            });
 
+            int voteValue;
+
+            switch (voteType)
+            {
+                case VoteType.Remove:
+                    voteValue = 0;
+                    break;
+                case VoteType.Up:
+                    voteValue = 1;
+                    break;
+                case VoteType.Down:
+                    voteValue = 0;
+                    break;
+                default:
+                    voteValue = 0;
+                    break;
+            }
+
+            q.Votes.Add(new Vote()
+            {
+                Voter = user,
+                VoteValue = voteValue,
+                TimeStamp = DateTime.UtcNow,
+                Active = true        
+            });
+
+
+            try
+            {
+                db.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            }
+
+            return new HttpResponseMessage(HttpStatusCode.OK); 
 
         }
 

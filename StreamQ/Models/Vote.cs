@@ -10,6 +10,7 @@ namespace StreamQ.Models
         public int Id { get; set; }
         public int VoteValue { get; set; }
         public DateTime TimeStamp { get; set; }
+        public bool Active { get; set; }
 
         public ApplicationUser Voter { get; set; }
     }
