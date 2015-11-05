@@ -25,8 +25,9 @@ namespace StreamQ
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/styles.css",
-                      "~/Content/font-awesome.css"));
+                      "~/Content/font-awesome.css",
+                      "~/Content/slate.css",
+                      "~/Content/styles.css"));
         }
     }
 }

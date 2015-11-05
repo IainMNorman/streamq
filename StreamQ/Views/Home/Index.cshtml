@@ -37,7 +37,7 @@
         @foreach (var q in Model.Questions)
         {
             <div class="well well-sm">
-                <div class="row sq-question" data-question-id="@q.Id" data-votevalue="@q.CurrentUserVoteValue">
+                <div class="row sq-question" data-questionid="@q.Id" data-votevalue="@q.CurrentUserVoteValue">
                     <div class="col-sm-2 col-md-1 text-center">
                         <div>
                             <i class="voteup fa fa-fw fa-chevron-circle-up
@@ -67,26 +67,28 @@
 
             $(".voteup").click(function () {
                 var q = $(this).parents(".sq-question");
+                var qid = q.data("questionid");
                 var voteValue = Number(q.data("votevalue"));
                 var totalVotes = Number(q.find(".totalvotes").html());
-                if (voteValue == 0)
-                {
+                if (voteValue == 0) {
                     //tell api to upvote.
+                    vote(qid, 1);
                     q.data("votevalue", 1);
                     q.find(".voteup").addClass("voted");
                     q.find(".totalvotes").html(totalVotes + 1);
+
                 }
-                else if (voteValue == -1)
-                {
+                else if (voteValue == -1) {
                     //tell api to upvote.
+                    vote(qid, 1);
                     q.data("votevalue", 1);
                     q.find(".voteup").addClass("voted");
                     q.find(".votedown").removeClass("voted");
                     q.find(".totalvotes").html(totalVotes + 2);
                 }
-                else if (voteValue == 1)
-                {
+                else if (voteValue == 1) {
                     // tell api to remove vote.
+                    vote(qid, 0);
                     q.data("votevalue", 0)
                     q.find(".voteup").removeClass("voted");
                     q.find(".totalvotes").html(totalVotes - 1);
@@ -95,22 +97,26 @@
 
             $(".votedown").click(function () {
                 var q = $(this).parents(".sq-question");
+                var qid = q.data("questionid");
                 var voteValue = Number(q.data("votevalue"));
                 var totalVotes = Number(q.find(".totalvotes").html());
                 if (voteValue == 0) {
                     //tell api to votedown.
+                    vote(qid, 2);
                     q.data("votevalue", -1);
                     q.find(".votedown").addClass("voted");
-                    q.find(".totalvotes").html(totalVotes -1);
+                    q.find(".totalvotes").html(totalVotes - 1);
                 }
                 else if (voteValue == -1) {
                     //tell api to remove vote.
+                    vote(qid, 0);
                     q.data("votevalue", 0);
                     q.find(".votedown").removeClass("voted");
                     q.find(".totalvotes").html(totalVotes + 1);
                 }
                 else if (voteValue == 1) {
-                    // tell api to remove vote.
+                    // tell api to down vote.
+                    vote(qid, 2);
                     q.data("votevalue", -1)
                     q.find(".voteup").removeClass("voted");
                     q.find(".votedown").addClass("voted");
@@ -119,6 +125,10 @@
             });
 
         });
+
+        function vote(questionId, voteType) {
+            $.ajax("/api/v1/questions/" + questionId + "/" + voteType);
+        }
 
     </script>
 }
