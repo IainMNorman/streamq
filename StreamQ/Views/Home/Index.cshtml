@@ -2,33 +2,11 @@
 @using Microsoft.AspNet.Identity;
 @{
     ViewBag.Title = "Questions";
-
-    var qString = "questions";
-    if (Model.QuestionQuota == 1)
-    {
-        qString = "question";
-    }
-
-    var vString = "votes";
-    if (Model.VoteQuota == 1)
-    {
-        vString = "vote";
-    }
 }
 <div class="row">
     <div class="col-sm-12">
         <h1 class="page-header">
             Questions for Ed
-            @if (User.Identity.IsAuthenticated)
-            {
-                <span class="pull-right">
-                    <small>
-                        You have
-                        @Model.QuestionQuota @qString and
-                        @Model.VoteQuota @vString left.
-                    </small>
-                </span>
-            }
         </h1>
 
         @if (User.Identity.IsAuthenticated)
@@ -36,7 +14,7 @@
             <p>Ask a question below. Please keep question to the topic of the current stream. You have a limited number of question and votes to use, use them wisley.</p>
             <p>Don't waste your questions asking things that are already here. Please have a look down to see if it's been asked already and up-vote it instead!</p>
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <form method="post">
+            <form method="post" action="home/askquestion">
                 <div class="form-group form-group-lg">
                     <div class="col-sm-12 input-group">
                         @Html.EditorFor(model => model.QuestionText, new { htmlAttributes = new { @class = "form-control", placeholder = "Enter your question..." } })
@@ -69,19 +47,11 @@
                         }
                         else
                         {
-                            if (Model.VoteQuota > 0 && q.Questioner.Id != User.Identity.GetUserId())
-                            {
-                                <a href="/home/voteup/@q.Id" class="btn btn-success" title="Vote Up"><i class="fa fa-thumbs-up"></i></a>
-                                <a href="/home/votedown/@q.Id" class="btn btn-warning" title="Vote Down"><i class="fa fa-thumbs-down"></i></a>
-                            }
-                            else
-                            {
-                                if (q.Questioner.Id == User.Identity.GetUserId())
-                                {
-                                    <small>Your question</small>
-                                }
-                            }
+
+                            <a href="/home/voteup/@q.Id" class="btn btn-success" title="Vote Up"><i class="fa fa-thumbs-up"></i></a>
+                            <a href="/home/votedown/@q.Id" class="btn btn-warning" title="Vote Down"><i class="fa fa-thumbs-down"></i></a>
                         }
+
                     </div>
                 </div>
             </div>
