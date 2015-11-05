@@ -27,35 +27,33 @@ namespace StreamQ
 
         private async Task ConfigSendGridasync(IdentityMessage message)
         {
-            if (message.Destination != null)
+            var myMessage = new SendGridMessage();
+            myMessage.AddTo(message.Destination);
+            myMessage.From = new System.Net.Mail.MailAddress(
+                                "no-reply@iainmnorman.com", "StreamQ");
+            myMessage.Subject = message.Subject;
+            myMessage.Text = message.Body;
+            myMessage.Html = message.Body;
+
+            var credentials = new NetworkCredential(
+                       ConfigurationManager.AppSettings["mailAccount"],
+                       ConfigurationManager.AppSettings["mailPassword"]
+                       );
+
+            // Create a Web transport for sending email.
+            var transportWeb = new Web(credentials);
+
+            // Send the email.
+            if (transportWeb != null)
             {
-                var myMessage = new SendGridMessage();
-                myMessage.AddTo(message.Destination);
-                myMessage.From = new System.Net.Mail.MailAddress(
-                                    "no-reply@iainmnorman.com", "StreamQ");
-                myMessage.Subject = message.Subject;
-                myMessage.Text = message.Body;
-                myMessage.Html = message.Body;
-
-                var credentials = new NetworkCredential(
-                           ConfigurationManager.AppSettings["mailAccount"],
-                           ConfigurationManager.AppSettings["mailPassword"]
-                           );
-
-                // Create a Web transport for sending email.
-                var transportWeb = new Web(credentials);
-
-                // Send the email.
-                if (transportWeb != null)
-                {
-                    await transportWeb.DeliverAsync(myMessage);
-                }
-                else
-                {
-                    Trace.TraceError("Failed to create Web transport.");
-                    await Task.FromResult(0);
-                }
+                await transportWeb.DeliverAsync(myMessage);
             }
+            else
+            {
+                Trace.TraceError("Failed to create Web transport.");
+                await Task.FromResult(0);
+            }
+
         }
     }
 
