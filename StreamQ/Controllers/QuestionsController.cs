@@ -51,7 +51,7 @@ namespace StreamQ.Controllers
                     voteValue = 1;
                     break;
                 case VoteType.Down:
-                    voteValue = 0;
+                    voteValue = -1;
                     break;
                 default:
                     voteValue = 0;

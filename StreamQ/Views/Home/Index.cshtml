@@ -37,22 +37,19 @@
         @foreach (var q in Model.Questions)
         {
             <div class="well well-sm">
-                <div class="row sq-question">
-                    <div class="col-sm-2 col-md-1"><span class="label label-primary">@(q.TotalVotes) @( (q.TotalVotes) == 1 ? "vote" : "votes")</span></div>
-                    <div class="col-sm-8 col-md-9">@q.Text </div>
-                    <div class="col-sm-2 text-right">
-                        @if (q.Answered)
-                        {
-                            <small>Answered</small>
-                        }
-                        else
-                        {
-
-                            <a href="/home/voteup/@q.Id" class="btn btn-success" title="Vote Up"><i class="fa fa-thumbs-up"></i></a>
-                            <a href="/home/votedown/@q.Id" class="btn btn-warning" title="Vote Down"><i class="fa fa-thumbs-down"></i></a>
-                        }
-
+                <div class="row sq-question" data-question-id="@q.Id" data-votevalue="@q.CurrentUserVoteValue">
+                    <div class="col-sm-2 col-md-1 text-center">
+                        <div>
+                            <i class="voteup fa fa-fw fa-chevron-circle-up
+                                @(q.CurrentUserVoteValue == 1 ? "voted" : "")"></i>
+                        </div>
+                        <div class="totalvotes">@(q.TotalVotes)</div>
+                        <div>
+                            <i class="votedown fa fa-fw fa-chevron-circle-down
+                                @(q.CurrentUserVoteValue == -1 ? "voted" : "")"></i>
+                        </div>
                     </div>
+                    <div class="col-sm-10 col-md-11">@q.Text @q.CurrentUserVoteValue</div>
                 </div>
             </div>
         }
@@ -63,4 +60,65 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+
+        $(function () {
+
+            $(".voteup").click(function () {
+                var q = $(this).parents(".sq-question");
+                var voteValue = Number(q.data("votevalue"));
+                var totalVotes = Number(q.find(".totalvotes").html());
+                if (voteValue == 0)
+                {
+                    //tell api to upvote.
+                    q.data("votevalue", 1);
+                    q.find(".voteup").addClass("voted");
+                    q.find(".totalvotes").html(totalVotes + 1);
+                }
+                else if (voteValue == -1)
+                {
+                    //tell api to upvote.
+                    q.data("votevalue", 1);
+                    q.find(".voteup").addClass("voted");
+                    q.find(".votedown").removeClass("voted");
+                    q.find(".totalvotes").html(totalVotes + 2);
+                }
+                else if (voteValue == 1)
+                {
+                    // tell api to remove vote.
+                    q.data("votevalue", 0)
+                    q.find(".voteup").removeClass("voted");
+                    q.find(".totalvotes").html(totalVotes - 1);
+                }
+            });
+
+            $(".votedown").click(function () {
+                var q = $(this).parents(".sq-question");
+                var voteValue = Number(q.data("votevalue"));
+                var totalVotes = Number(q.find(".totalvotes").html());
+                if (voteValue == 0) {
+                    //tell api to votedown.
+                    q.data("votevalue", -1);
+                    q.find(".votedown").addClass("voted");
+                    q.find(".totalvotes").html(totalVotes -1);
+                }
+                else if (voteValue == -1) {
+                    //tell api to remove vote.
+                    q.data("votevalue", 0);
+                    q.find(".votedown").removeClass("voted");
+                    q.find(".totalvotes").html(totalVotes + 1);
+                }
+                else if (voteValue == 1) {
+                    // tell api to remove vote.
+                    q.data("votevalue", -1)
+                    q.find(".voteup").removeClass("voted");
+                    q.find(".votedown").addClass("voted");
+                    q.find(".totalvotes").html(totalVotes - 2);
+                }
+            });
+
+        });
+
+    </script>
 }

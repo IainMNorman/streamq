@@ -18,22 +18,17 @@ namespace StreamQ.Controllers
         public ActionResult Index()
         {
             var model = new QuestionsVM();
-            if (User.Identity.IsAuthenticated)
-            {
-                var user = db.Users.Find(User.Identity.GetUserId());
-            }
-            model.Questions = db.Questions
-                .OrderBy(o => o.Answered)
-                .ThenByDescending(o => o.Votes.Sum(v => v.VoteValue));
+            model.Questions = GetQuestions();
             model.QuestionText = null;
             return View(model);
         }
+
+
 
         [HttpPost]
         [Authorize]
         public ActionResult AskQuestion(QuestionsVM model)
         {
-            model.Questions = db.Questions.OrderByDescending(o => o.Votes.Sum(v => v.VoteValue));
 
             if (ModelState.IsValid)
             {
@@ -51,6 +46,32 @@ namespace StreamQ.Controllers
 
             }
             return View("Index", model);
+        }
+
+        private List<QuestionVM> GetQuestions()
+        {
+            var qs = new List<QuestionVM>();
+
+
+            qs = db.Questions.Where(q => q.Deleted != true).Select(s => new QuestionVM
+            {
+                Id = s.Id,
+                Text = s.Text,                
+                TotalVotes = s.Votes.Where(v => v.Active == true).Sum(v => (int?)v.VoteValue) ?? 0,
+                CurrentUserVoteValue = 0
+            }).ToList();
+
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = db.Users.Find(User.Identity.GetUserId());
+                foreach (var vote in user.MyVotes)
+                {
+                    qs.FirstOrDefault(q => q.Id == vote.Question.Id).CurrentUserVoteValue = vote.VoteValue;
+                }
+            }
+
+            return qs;
         }
 
     }

@@ -3,6 +3,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace StreamQ.Models
 {
@@ -16,6 +18,9 @@ namespace StreamQ.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        [InverseProperty("Voter")]
+        public virtual ICollection<Vote> MyVotes { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>

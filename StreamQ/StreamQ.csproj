@@ -255,6 +255,10 @@
     <Compile Include="Migrations\201511042115049_Votes1.Designer.cs">
       <DependentUpon>201511042115049_Votes1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201511051937402_ActiveVote.cs" />
+    <Compile Include="Migrations\201511051937402_ActiveVote.Designer.cs">
+      <DependentUpon>201511051937402_ActiveVote.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -376,6 +380,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511042115049_Votes1.resx">
       <DependentUpon>201511042115049_Votes1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511051937402_ActiveVote.resx">
+      <DependentUpon>201511051937402_ActiveVote.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
