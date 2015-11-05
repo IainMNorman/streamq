@@ -9,7 +9,7 @@ using System.Web.Mvc;
 
 namespace StreamQ.Controllers
 {
-    [Authorize(Users ="iain@norman.org")]
+    [Authorize(Users ="Iain M Norman", Roles="Administrator")]
     public class AdminController : Controller
     {
         ApplicationDbContext db = new ApplicationDbContext();
