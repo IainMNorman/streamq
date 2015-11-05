@@ -3,6 +3,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace StreamQ.Models
 {
@@ -17,9 +19,8 @@ namespace StreamQ.Models
             return userIdentity;
         }
 
-
-        public int VoteQuota { get; set; }
-        public int QuestionQuota { get; set; }
+        [InverseProperty("Voter")]
+        public virtual ICollection<Vote> MyVotes { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -35,5 +36,6 @@ namespace StreamQ.Models
         }
 
         public DbSet<Question> Questions { get; set; }
+        
     }
 }

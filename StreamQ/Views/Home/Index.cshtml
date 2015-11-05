@@ -2,33 +2,11 @@
 @using Microsoft.AspNet.Identity;
 @{
     ViewBag.Title = "Questions";
-
-    var qString = "questions";
-    if (Model.QuestionQuota == 1)
-    {
-        qString = "question";
-    }
-
-    var vString = "votes";
-    if (Model.VoteQuota == 1)
-    {
-        vString = "vote";
-    }
 }
 <div class="row">
     <div class="col-sm-12">
         <h1 class="page-header">
             Questions for Ed
-            @if (User.Identity.IsAuthenticated)
-            {
-                <span class="pull-right">
-                    <small>
-                        You have
-                        @Model.QuestionQuota @qString and
-                        @Model.VoteQuota @vString left.
-                    </small>
-                </span>
-            }
         </h1>
 
         @if (User.Identity.IsAuthenticated)
@@ -36,7 +14,7 @@
             <p>Ask a question below. Please keep question to the topic of the current stream. You have a limited number of question and votes to use, use them wisley.</p>
             <p>Don't waste your questions asking things that are already here. Please have a look down to see if it's been asked already and up-vote it instead!</p>
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <form method="post">
+            <form method="post" action="home/askquestion">
                 <div class="form-group form-group-lg">
                     <div class="col-sm-12 input-group">
                         @Html.EditorFor(model => model.QuestionText, new { htmlAttributes = new { @class = "form-control", placeholder = "Enter your question..." } })
@@ -59,30 +37,19 @@
         @foreach (var q in Model.Questions)
         {
             <div class="well well-sm">
-                <div class="row sq-question">
-                    <div class="col-sm-2 col-md-1"><span class="label label-primary">@(q.TotalVotes) @( (q.TotalVotes) == 1 ? "vote" : "votes")</span></div>
-                    <div class="col-sm-8 col-md-9">@q.Text </div>
-                    <div class="col-sm-2 text-right">
-                        @if (q.Answered)
-                        {
-                            <small>Answered</small>
-                        }
-                        else
-                        {
-                            if (Model.VoteQuota > 0 && q.Questioner.Id != User.Identity.GetUserId())
-                            {
-                                <a href="/home/voteup/@q.Id" class="btn btn-success" title="Vote Up"><i class="fa fa-thumbs-up"></i></a>
-                                <a href="/home/votedown/@q.Id" class="btn btn-warning" title="Vote Down"><i class="fa fa-thumbs-down"></i></a>
-                            }
-                            else
-                            {
-                                if (q.Questioner.Id == User.Identity.GetUserId())
-                                {
-                                    <small>Your question</small>
-                                }
-                            }
-                        }
+                <div class="row sq-question" data-questionid="@q.Id" data-votevalue="@q.CurrentUserVoteValue">
+                    <div class="col-sm-2 col-md-1 text-center">
+                        <div>
+                            <i class="voteup fa fa-fw fa-chevron-circle-up
+                                @(q.CurrentUserVoteValue == 1 ? "voted" : "")"></i>
+                        </div>
+                        <div class="totalvotes">@(q.TotalVotes)</div>
+                        <div>
+                            <i class="votedown fa fa-fw fa-chevron-circle-down
+                                @(q.CurrentUserVoteValue == -1 ? "voted" : "")"></i>
+                        </div>
                     </div>
+                    <div class="col-sm-10 col-md-11">@q.Text @q.CurrentUserVoteValue</div>
                 </div>
             </div>
         }
@@ -93,4 +60,75 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+
+        $(function () {
+
+            $(".voteup").click(function () {
+                var q = $(this).parents(".sq-question");
+                var qid = q.data("questionid");
+                var voteValue = Number(q.data("votevalue"));
+                var totalVotes = Number(q.find(".totalvotes").html());
+                if (voteValue == 0) {
+                    //tell api to upvote.
+                    vote(qid, 1);
+                    q.data("votevalue", 1);
+                    q.find(".voteup").addClass("voted");
+                    q.find(".totalvotes").html(totalVotes + 1);
+
+                }
+                else if (voteValue == -1) {
+                    //tell api to upvote.
+                    vote(qid, 1);
+                    q.data("votevalue", 1);
+                    q.find(".voteup").addClass("voted");
+                    q.find(".votedown").removeClass("voted");
+                    q.find(".totalvotes").html(totalVotes + 2);
+                }
+                else if (voteValue == 1) {
+                    // tell api to remove vote.
+                    vote(qid, 0);
+                    q.data("votevalue", 0)
+                    q.find(".voteup").removeClass("voted");
+                    q.find(".totalvotes").html(totalVotes - 1);
+                }
+            });
+
+            $(".votedown").click(function () {
+                var q = $(this).parents(".sq-question");
+                var qid = q.data("questionid");
+                var voteValue = Number(q.data("votevalue"));
+                var totalVotes = Number(q.find(".totalvotes").html());
+                if (voteValue == 0) {
+                    //tell api to votedown.
+                    vote(qid, 2);
+                    q.data("votevalue", -1);
+                    q.find(".votedown").addClass("voted");
+                    q.find(".totalvotes").html(totalVotes - 1);
+                }
+                else if (voteValue == -1) {
+                    //tell api to remove vote.
+                    vote(qid, 0);
+                    q.data("votevalue", 0);
+                    q.find(".votedown").removeClass("voted");
+                    q.find(".totalvotes").html(totalVotes + 1);
+                }
+                else if (voteValue == 1) {
+                    // tell api to down vote.
+                    vote(qid, 2);
+                    q.data("votevalue", -1)
+                    q.find(".voteup").removeClass("voted");
+                    q.find(".votedown").addClass("voted");
+                    q.find(".totalvotes").html(totalVotes - 2);
+                }
+            });
+
+        });
+
+        function vote(questionId, voteType) {
+            $.ajax("/api/v1/questions/" + questionId + "/" + voteType);
+        }
+
+    </script>
 }

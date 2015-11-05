@@ -5,3 +5,8 @@
 .sq-question {
     font-size: 22px;
 }
+
+.voted
+{
+    color: orangered;
+}

@@ -18,90 +18,60 @@ namespace StreamQ.Controllers
         public ActionResult Index()
         {
             var model = new QuestionsVM();
-            if (User.Identity.IsAuthenticated)
-            {
-                var user = db.Users.Find(User.Identity.GetUserId());
-                model.VoteQuota = user.VoteQuota;
-                model.QuestionQuota = user.QuestionQuota;
-            }
-            model.Questions = db.Questions
-                .OrderBy(o => o.Answered)
-                .ThenByDescending(o => o.Votes.Sum(v => v.VoteValue));
+            model.Questions = GetQuestions();
             model.QuestionText = null;
             return View(model);
         }
 
+
+
         [HttpPost]
         [Authorize]
-        public ActionResult Index(QuestionsVM model)
+        public ActionResult AskQuestion(QuestionsVM model)
         {
-            model.Questions = db.Questions.OrderByDescending(o => o.Votes.Sum(v => v.VoteValue));
 
             if (ModelState.IsValid)
             {
 
                 var user = db.Users.Find(User.Identity.GetUserId());
-                model.VoteQuota = user.VoteQuota;
-                model.QuestionQuota = user.QuestionQuota;
-                if (user.QuestionQuota > 0)
+
+                db.Questions.Add(new Question()
                 {
-                    user.QuestionQuota--;
-                    db.Questions.Add(new Question() {
-                        Text = model.QuestionText,
-                        Questioner = user,
-                        TimeStamp = DateTime.UtcNow                        
-                    });
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    ModelState.AddModelError("QuestionText", "Out of questions!");
-                    return View("Index", model);
-                }
+                    Text = model.QuestionText,
+                    Questioner = user,
+                    TimeStamp = DateTime.UtcNow
+                });
+                db.SaveChanges();
+                return RedirectToAction("Index");
+
             }
             return View("Index", model);
         }
 
-        [HttpGet]
-        [Authorize]
-        public ActionResult VoteUp(int id)
+        private List<QuestionVM> GetQuestions()
         {
-            Vote(id, true);
-            return RedirectToAction("Index");
-        }
+            var qs = new List<QuestionVM>();
 
-        [HttpGet]
-        [Authorize]
-        public ActionResult VoteDown(int id)
-        {
-            Vote(id, false);
-            return RedirectToAction("Index");
-        }
 
-        private void Vote(int id, bool up)
-        {
-            var user = db.Users.Find(User.Identity.GetUserId());
-            var question = db.Questions.Find(id);
-
-            if (user.VoteQuota > 0 && user.Id != question.Questioner.Id)
+            qs = db.Questions.Where(q => q.Deleted != true).Select(s => new QuestionVM
             {
-                var vote = new Vote(){
-                    Voter = user,
-                    TimeStamp = DateTime.UtcNow
-                };
-                
-                user.VoteQuota--;
-                if (up)
+                Id = s.Id,
+                Text = s.Text,                
+                TotalVotes = s.Votes.Where(v => v.Active == true).Sum(v => (int?)v.VoteValue) ?? 0,
+                CurrentUserVoteValue = 0
+            }).ToList();
+
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = db.Users.Find(User.Identity.GetUserId());
+                foreach (var vote in user.MyVotes)
                 {
-                    vote.VoteValue = 1;
+                    qs.FirstOrDefault(q => q.Id == vote.Question.Id).CurrentUserVoteValue = vote.VoteValue;
                 }
-                else
-                {
-                    vote.VoteValue = -1;
-                }
-                db.SaveChanges();
             }
+
+            return qs;
         }
 
     }

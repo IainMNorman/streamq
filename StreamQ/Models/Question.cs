@@ -17,6 +17,8 @@ namespace StreamQ.Models
         public DateTime TimeStamp { get; set; }
 
         public virtual ApplicationUser Questioner { get; set; }
+
+        [InverseProperty("Question")]
         public virtual ICollection<Vote> Votes { get; set; }
 
         [NotMapped]
@@ -24,7 +26,7 @@ namespace StreamQ.Models
         {
             get
             {
-                return this.Votes.Sum(v => v.VoteValue);
+                return this.Votes.Where(v => v.Active).Sum(s => s.VoteValue);
             }
         }
 
