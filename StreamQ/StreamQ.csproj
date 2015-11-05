@@ -297,9 +297,6 @@
     <Content Include="fonts\fontawesome-webfont.ttf" />
     <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="ApplicationInsights.config" />
-    <Content Include="AppSettingsSecrets.config">
-      <SubType>Designer</SubType>
-    </Content>
     <None Include="Properties\PublishProfiles\streamq %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\streamq.pubxml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
