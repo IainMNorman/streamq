@@ -24,7 +24,7 @@ namespace StreamQ.Controllers
                 Text = s.Text,
                 TotalVotes = s.Votes.Where(v => v.Active == true).Sum(v => (int?)v.VoteValue) ?? 0,
                 CurrentUserVoteValue = 0
-            }).OrderBy(o => o.TotalVotes).ToList().ToList();
+            }).OrderByDescending(o => o.TotalVotes).ToList().ToList();
 
             return View(qs);
         }

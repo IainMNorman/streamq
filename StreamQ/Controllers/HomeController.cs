@@ -60,7 +60,7 @@ namespace StreamQ.Controllers
                 TotalVotes = s.Votes.Where(v => v.Active == true).Sum(v => (int?)v.VoteValue) ?? 0,
                 CurrentUserVoteValue = 0,
                 Answered = s.Answered
-            }).OrderBy(o => o.TotalVotes).ToList();
+            }).OrderByDescending(o => o.TotalVotes).ToList();
 
 
             if (User.Identity.IsAuthenticated)
