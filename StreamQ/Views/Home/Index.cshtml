@@ -10,7 +10,7 @@
         </h1>
         @if (User.Identity.IsAuthenticated)
         {
-            <p>Ask a question below. Please keep question to the topic of the current stream. You have a limited number of question and votes to use, use them wisley.</p>
+            <p>Ask a question below. Please keep questions to the topic of the current stream.</p>
             <p>Don't waste your questions asking things that are already here. Please have a look down to see if it's been asked already and up-vote it instead!</p>
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <form method="post" action="home/askquestion">
@@ -23,10 +23,7 @@
                     </div>
                 </div>
             </form>
-
             @Html.ValidationMessageFor(model => model.QuestionText, "", new { @class = "text-danger" })
-
-
         }
         else
         {
@@ -54,14 +51,12 @@
                             </div>
                         }
                     </div>
-
                     <div class="col-sm-10 col-md-11">@q.Text @q.CurrentUserVoteValue</div>
                 </div>
             </div>
         }
     </div>
 </div>
-
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <script>

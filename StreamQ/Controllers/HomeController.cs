@@ -60,14 +60,15 @@ namespace StreamQ.Controllers
                 TotalVotes = s.Votes.Where(v => v.Active == true).Sum(v => (int?)v.VoteValue) ?? 0,
                 CurrentUserVoteValue = 0,
                 Answered = s.Answered
-            }).ToList();
+            }).OrderBy(o => o.TotalVotes).ToList();
 
 
             if (User.Identity.IsAuthenticated)
             {
                 var user = db.Users.Find(User.Identity.GetUserId());
-                foreach (var vote in user.MyVotes)
+                foreach (var vote in user.MyVotes.Where(v => !v.Question.Deleted))
                 {
+                    
                     qs.FirstOrDefault(q => q.Id == vote.Question.Id).CurrentUserVoteValue = vote.VoteValue;
                 }
             }
