@@ -40,15 +40,22 @@
                         }
                         else
                         {
-                            <div>
-                                <i class="voteup fa fa-fw fa-chevron-circle-up
+                            if (User.Identity.IsAuthenticated)
+                            {
+                                <div>
+                                    <i class="voteup fa fa-fw fa-chevron-circle-up
                                 @(q.CurrentUserVoteValue == 1 ? "voted" : "")"></i>
-                            </div>
-                            <div class="totalvotes">@(q.TotalVotes)</div>
-                            <div>
-                                <i class="votedown fa fa-fw fa-chevron-circle-down
+                                </div>
+                                <div class="totalvotes">@(q.TotalVotes)</div>
+                                <div>
+                                    <i class="votedown fa fa-fw fa-chevron-circle-down
                                 @(q.CurrentUserVoteValue == -1 ? "voted" : "")"></i>
-                            </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="totalvotes">@(q.TotalVotes)</div>
+                            }
                         }
                     </div>
                     <div class="col-sm-10 col-md-11">@q.Text</div>
