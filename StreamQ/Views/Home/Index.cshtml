@@ -8,7 +8,6 @@
         <h1 class="page-header">
             Questions for Ed
         </h1>
-
         @if (User.Identity.IsAuthenticated)
         {
             <p>Ask a question below. Please keep question to the topic of the current stream. You have a limited number of question and votes to use, use them wisley.</p>
@@ -33,22 +32,29 @@
         {
             <p>Please <a href="/account/login/">login</a> to ask a question or vote.</p>
         }
-
         @foreach (var q in Model.Questions)
         {
             <div class="well well-sm">
                 <div class="row sq-question" data-questionid="@q.Id" data-votevalue="@q.CurrentUserVoteValue">
                     <div class="col-sm-2 col-md-1 text-center">
-                        <div>
-                            <i class="voteup fa fa-fw fa-chevron-circle-up
+                        @if (q.Answered)
+                        {
+                            <i class="voteup fa fa-fw fa-check-circle" title="Has been asked"></i>
+                        }
+                        else
+                        {
+                            <div>
+                                <i class="voteup fa fa-fw fa-chevron-circle-up
                                 @(q.CurrentUserVoteValue == 1 ? "voted" : "")"></i>
-                        </div>
-                        <div class="totalvotes">@(q.TotalVotes)</div>
-                        <div>
-                            <i class="votedown fa fa-fw fa-chevron-circle-down
+                            </div>
+                            <div class="totalvotes">@(q.TotalVotes)</div>
+                            <div>
+                                <i class="votedown fa fa-fw fa-chevron-circle-down
                                 @(q.CurrentUserVoteValue == -1 ? "voted" : "")"></i>
-                        </div>
+                            </div>
+                        }
                     </div>
+
                     <div class="col-sm-10 col-md-11">@q.Text @q.CurrentUserVoteValue</div>
                 </div>
             </div>
@@ -56,11 +62,8 @@
     </div>
 </div>
 
-
-
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-
     <script>
 
         $(function () {
