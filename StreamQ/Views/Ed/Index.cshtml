@@ -1,11 +1,13 @@
-﻿@model IEnumerable<StreamQ.Models.Question>
-
+﻿@model IEnumerable<StreamQ.ViewModels.QuestionVM>
 @{
     ViewBag.Title = "Ed's Page";
 }
-
 <h1 class="page-title">Ed's Page</h1>
-
+<p class="lead">
+    Clicking "Asked" will mark as asked on the main page.<br>
+    Clicking "Can't Answer" will clear if from this page so it doesn't bother you anymore. It will remain on the main page so that users don't keep asking it.
+</p>
+<p class="lead">Remember to refresh to see new questions and vote counts.</p>
 @foreach (var q in Model)
 {
     <div class="well well-sm">
@@ -13,8 +15,13 @@
             <div class="col-sm-2 col-md-1"><span class="label label-primary">@(q.TotalVotes) @( (q.TotalVotes) == 1 ? "vote" : "votes")</span></div>
             <div class="col-sm-6 col-md-8">@q.Text </div>
             <div class="col-sm-4 col-md-3 text-right">
-                <a href="/ed/answer/@q.Id" class="btn btn-success">Answered</a>
-                <a href="/ed/reject/@q.Id" class="btn btn-warning">Rejected</a>
+                <a href="/ed/answer/@q.Id" class="btn btn-success">Asked</a>
+                <a href="/ed/reject/@q.Id" class="btn btn-warning">Can't Answer</a>
+                @if (Request["d"] != null)
+                {
+                    <a href="/ed/delete/@q.Id" class="btn btn-danger">Delete</a>
+                }
+
             </div>
         </div>
     </div>

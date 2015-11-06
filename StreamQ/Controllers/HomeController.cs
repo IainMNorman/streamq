@@ -58,7 +58,8 @@ namespace StreamQ.Controllers
                 Id = s.Id,
                 Text = s.Text,                
                 TotalVotes = s.Votes.Where(v => v.Active == true).Sum(v => (int?)v.VoteValue) ?? 0,
-                CurrentUserVoteValue = 0
+                CurrentUserVoteValue = 0,
+                Answered = s.Answered
             }).ToList();
 
 

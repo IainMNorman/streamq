@@ -22,5 +22,6 @@ namespace StreamQ.ViewModels
         public string Text { get; set; }
         public int TotalVotes { get; set; }
         public int CurrentUserVoteValue { get; set; }
+        public bool Answered { get; set; }
     }
 }

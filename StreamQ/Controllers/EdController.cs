@@ -1,4 +1,5 @@
 ﻿using StreamQ.Models;
+using StreamQ.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +16,16 @@ namespace StreamQ.Controllers
         // GET: Ed
         public ActionResult Index()
         {
-            var qs = db.Questions.Where(q => q.Rejected != true && q.Answered != true)
-                .OrderByDescending(o => o.Votes.Sum(v => v.VoteValue));
+            var qs = new List<QuestionVM>();
+
+            qs = db.Questions.Where(q => q.Deleted != true && q.Answered == false && q.Rejected == false).Select(s => new QuestionVM
+            {
+                Id = s.Id,
+                Text = s.Text,
+                TotalVotes = s.Votes.Where(v => v.Active == true).Sum(v => (int?)v.VoteValue) ?? 0,
+                CurrentUserVoteValue = 0
+            }).ToList();
+
             return View(qs);
         }
 
@@ -32,6 +41,14 @@ namespace StreamQ.Controllers
         {
             var q = db.Questions.Find(id);
             q.Rejected = true;
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult Delete(int id)
+        {
+            var q = db.Questions.Find(id);
+            q.Deleted = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }
