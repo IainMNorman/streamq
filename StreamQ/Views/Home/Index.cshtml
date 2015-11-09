@@ -12,18 +12,28 @@
         {
             <p>Ask a question below. Please keep questions to the topic of the current stream.</p>
             <p>Don't waste your questions asking things that are already here. Please have a look down to see if it's been asked already and up-vote it instead!</p>
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <p>
+
+            </p>
+
             <form method="post" action="home/askquestion">
                 <div class="form-group form-group-lg">
                     <div class="col-sm-12 input-group">
                         @Html.EditorFor(model => model.QuestionText, new { htmlAttributes = new { @class = "form-control", placeholder = "Enter your question..." } })
+
                         <span class="input-group-btn">
                             <input type="submit" class="btn btn-primary btn-lg" value="Ask Question" />
                         </span>
                     </div>
                 </div>
+                <div>
+                    @Html.ValidationMessageFor(model => model.QuestionText, "", new { @class = "text-danger" })
+                </div>
             </form>
-            @Html.ValidationMessageFor(model => model.QuestionText, "", new { @class = "text-danger" })
+            <p>
+
+            </p>
+
         }
         else
         {
@@ -43,16 +53,16 @@
                         {
                             if (User.Identity.IsAuthenticated)
                             {
-                            <div>
-                                <i class="voteup fa fa-fw fa-chevron-circle-up
+                                <div>
+                                    <i class="voteup fa fa-fw fa-chevron-circle-up
                                 @(q.CurrentUserVoteValue == 1 ? "voted" : "")"></i>
-                            </div>
-                            <div class="totalvotes">@(q.TotalVotes)</div>
-                            <div>
-                                <i class="votedown fa fa-fw fa-chevron-circle-down
+                                </div>
+                                <div class="totalvotes">@(q.TotalVotes)</div>
+                                <div>
+                                    <i class="votedown fa fa-fw fa-chevron-circle-down
                                 @(q.CurrentUserVoteValue == -1 ? "voted" : "")"></i>
-                            </div>
-                        }
+                                </div>
+                            }
                             else
                             {
                                 <div class="totalvotes">@(q.TotalVotes)</div>
@@ -137,5 +147,5 @@
         }
 
     </script>
-    
+
 }
