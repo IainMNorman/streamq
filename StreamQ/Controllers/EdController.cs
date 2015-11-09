@@ -22,9 +22,10 @@ namespace StreamQ.Controllers
             {
                 Id = s.Id,
                 Text = s.Text,
+                Questioner = s.Questioner.UserName,
                 TotalVotes = s.Votes.Where(v => v.Active == true).Sum(v => (int?)v.VoteValue) ?? 0,
                 CurrentUserVoteValue = 0
-            }).ToList();
+            }).OrderByDescending(o => o.TotalVotes).ToList().ToList();
 
             return View(qs);
         }

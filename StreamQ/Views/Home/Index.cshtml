@@ -10,7 +10,7 @@
         </h1>
         @if (User.Identity.IsAuthenticated)
         {
-            <p>Ask a question below. Please keep question to the topic of the current stream. You have a limited number of question and votes to use, use them wisley.</p>
+            <p>Ask a question below. Please keep questions to the topic of the current stream.</p>
             <p>Don't waste your questions asking things that are already here. Please have a look down to see if it's been asked already and up-vote it instead!</p>
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <form method="post" action="home/askquestion">
@@ -23,10 +23,7 @@
                     </div>
                 </div>
             </form>
-
             @Html.ValidationMessageFor(model => model.QuestionText, "", new { @class = "text-danger" })
-
-
         }
         else
         {
@@ -39,19 +36,27 @@
                     <div class="col-sm-2 col-md-1 text-center">
                         @if (q.Answered)
                         {
-                            <i class="voteup fa fa-fw fa-check-circle" title="Has been asked"></i>
+                            <i class="voteup fa fa-fw fa-check-circle" title="Has been asked"></i><br />
+                            <small>asked</small>
                         }
                         else
                         {
-                        <div>
-                            <i class="voteup fa fa-fw fa-chevron-circle-up
+                            if (User.Identity.IsAuthenticated)
+                            {
+                            <div>
+                                <i class="voteup fa fa-fw fa-chevron-circle-up
                                 @(q.CurrentUserVoteValue == 1 ? "voted" : "")"></i>
-                        </div>
-                        <div class="totalvotes">@(q.TotalVotes)</div>
-                        <div>
-                            <i class="votedown fa fa-fw fa-chevron-circle-down
+                            </div>
+                            <div class="totalvotes">@(q.TotalVotes)</div>
+                            <div>
+                                <i class="votedown fa fa-fw fa-chevron-circle-down
                                 @(q.CurrentUserVoteValue == -1 ? "voted" : "")"></i>
-                        </div>
+                            </div>
+                        }
+                            else
+                            {
+                                <div class="totalvotes">@(q.TotalVotes)</div>
+                            }
                         }
                     </div>
                     <div class="col-sm-10 col-md-11">@q.Text</div>
@@ -60,7 +65,6 @@
         }
     </div>
 </div>
-
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <script>
@@ -133,4 +137,5 @@
         }
 
     </script>
+    
 }

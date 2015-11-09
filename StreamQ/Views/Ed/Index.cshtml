@@ -1,6 +1,8 @@
 ﻿@model IEnumerable<StreamQ.ViewModels.QuestionVM>
 @{
     ViewBag.Title = "Ed's Page";
+
+
 }
 <h1 class="page-title">Ed's Page</h1>
 <p class="lead">
@@ -13,7 +15,9 @@
     <div class="well well-sm">
         <div class="row sq-question">
             <div class="col-sm-2 col-md-1"><span class="label label-primary">@(q.TotalVotes) @( (q.TotalVotes) == 1 ? "vote" : "votes")</span></div>
-            <div class="col-sm-6 col-md-8">@q.Text </div>
+            <div class="col-sm-6 col-md-8">
+                <small>@q.Questioner.Split('@')[0] asks:</small> &ldquo;@(q.Text)&rdquo;
+            </div>
             <div class="col-sm-4 col-md-3 text-right">
                 <a href="/ed/answer/@q.Id" class="btn btn-success">Asked</a>
                 <a href="/ed/reject/@q.Id" class="btn btn-warning">Can't Answer</a>
@@ -21,7 +25,6 @@
                 {
                     <a href="/ed/delete/@q.Id" class="btn btn-danger">Delete</a>
                 }
-
             </div>
         </div>
     </div>
