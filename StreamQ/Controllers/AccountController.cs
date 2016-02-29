@@ -77,7 +77,7 @@ namespace StreamQ.Controllers
             try {
                 var user = await UserManager.FindByEmailAsync(model.Email);
             }
-            catch (exception)
+            catch (Exception)
             {
                 // nothing! naughty!
             }
