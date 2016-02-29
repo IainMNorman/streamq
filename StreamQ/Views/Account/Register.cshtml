@@ -5,6 +5,8 @@
 
 <h2>@ViewBag.Title.</h2>
 
+<p><a href="/account/login">Login with Google or Twitter</a></p>
+
 @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
