@@ -74,24 +74,20 @@ namespace StreamQ.Controllers
             }
 
             // Require the user to have a confirmed email before they can log on.
-            try {
-                var user = await UserManager.FindByEmailAsync(model.Email);
-                
-                 if (user != null)
-                    {
-                        if (!await UserManager.IsEmailConfirmedAsync(user.Id))
-                        {
-                            string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account - Resend");
-        
-                            ViewBag.errorMessage = "You must have a confirmed email to log on. Confirmation email resent.";
-                            return View("Error");
-                        }
-                    }
-            }
-            catch (Exception)
+            
+            var user = await UserManager.FindByEmailAsync(model.Email);
+            
+            if (user != null)
             {
-                // nothing! naughty!
+                if (!await UserManager.IsEmailConfirmedAsync(user.Id))
+                {
+                    string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account - Resend");
+
+                    ViewBag.errorMessage = "You must have a confirmed email to log on. Confirmation email resent.";
+                    return View("Error");
+                }
             }
+           
            
 
             // This doesn't count login failures towards account lockout
