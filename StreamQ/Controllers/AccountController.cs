@@ -74,7 +74,13 @@ namespace StreamQ.Controllers
             }
 
             // Require the user to have a confirmed email before they can log on.
-            var user = await UserManager.FindByEmailAsync(model.Email);
+            try {
+                var user = await UserManager.FindByEmailAsync(model.Email);
+            }
+            catch (exception)
+            {
+                // nothing! naughty!
+            }
             if (user != null)
             {
                 if (!await UserManager.IsEmailConfirmedAsync(user.Id))
